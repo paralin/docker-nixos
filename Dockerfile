@@ -18,13 +18,15 @@ RUN mkdir -m 0755 /nix && \
 # . /home/nix/.nix-profile/etc/profile.d/nix.sh
 ADD default.nix configuration.nix /home/nixbld/sys-config/
 RUN \
+  mkdir /sys-root && \
   chown -R nixbld /home/nixbld && \
-  sudo -u nixbld bash -e -c "/usr/bin/nix-setup.sh"
+  sudo -u nixbld bash -e -c "/usr/bin/nix-setup.sh" && \
+  tar -C /sys-root -xf /home/nixbld/sys-config/result.tar.xz && \
+  rm /home/nixbld/sys-config/result.tar.xz
 
 FROM scratch
 
 WORKDIR /
-COPY --from=builder /nix/ /
+COPY --from=builder /sys-root/ /
 
-ENTRYPOINT ["/run/current-system/sw/bin/init"]
-
+ENTRYPOINT ["/init"]

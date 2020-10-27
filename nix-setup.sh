@@ -13,10 +13,12 @@ nix-env -u
 # install nixos
 cd $HOME/sys-config
 nix-build default.nix
-
+# move tarball out
+sudo mv ./result/tarball/nixos-system-*-linux.tar.xz ./result.tar.xz
+sudo chown $(whoami) ./result.tar.xz
+rm result
 # clear old envs + GC
 rm /nix/var/nix/gcroots/auto/* || true
-nix-collect-garbage -d
 # garbage collect the store
 nix-store --gc
-# TODO
+nix-collect-garbage -d
