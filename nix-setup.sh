@@ -2,9 +2,10 @@
 set -eo pipefail
 
 # expects nix-install to have been run first.
-source $HOME/.nix-profile/etc/profile.d/nix.sh
+# source $HOME/.nix-profile/etc/profile.d/nix.sh
 
 # update channels
+nix-channel --add https://nixos.org/channels/nixpkgs-unstable nixos
 nix-channel --update
 # update nix package manager
 nix-env -iA nixpkgs.nix
@@ -12,7 +13,7 @@ nix-env -iA nixpkgs.nix
 nix-env -u
 # install nixos
 cd $HOME/sys-config
-nix-build default.nix
+nix-build --option sandbox false default.nix
 # move tarball out
 sudo mv ./result/tarball/nixos-system-*-linux.tar.xz ./result.tar.xz
 sudo chown $(whoami) ./result.tar.xz
