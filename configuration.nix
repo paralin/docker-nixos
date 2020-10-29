@@ -1,4 +1,4 @@
-{ config, pkgs, ... }:
+{ config, pkgs, lib, ... }:
 
 {
   imports = [
@@ -17,7 +17,7 @@
   # this section may be unnecessary
   boot.isContainer = true;
   boot.loader = {
-    systemd-boot.enable = true;
+    systemd-boot.enable = false;
     efi.canTouchEfiVariables = false;
   };
 
@@ -46,4 +46,11 @@
   ];           
 
   environment.variables = { GOROOT = [ "${pkgs.go.out}/share/go" ]; };
+
+  # don't set sycstl values in a container
+  systemd.services.systemd-sysctl.restartTriggers = lib.mkForce [ ];
+  environment.etc."sysctl.d/60-nixos.conf" = lib.mkForce { text = "# disabled\n"; };
+  environment.etc."sysctl.d/50-default.conf" = lib.mkForce { text = "# diasbled\n"; };
+  environment.etc."sysctl.d/50-coredump.conf" = lib.mkForce { text = "# disabled\n"; };
+  boot.kernel.sysctl = lib.mkForce { };
 }

@@ -52,6 +52,8 @@ RUN \
 FROM scratch
 
 WORKDIR /
+ENV container docker
+
 COPY --from=builder /nix/ /nix/
 COPY --from=builder /sys-root/ /
 
