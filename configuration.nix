@@ -17,6 +17,7 @@
   networking.wireless.enable = false;
   security.audit.enable = false;
   systemd.enableEmergencyMode = false;
+  systemd.services.rescue.enable = false;
 
   boot.isContainer = true;
   boot.loader = {
