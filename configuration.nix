@@ -12,6 +12,7 @@
   networking.firewall.enable = false;
   networking.networkmanager.enable = false;
   networking.wireless.enable = false;
+  networking.resolvconf.dnsExtensionMechanism = false;
   networking.nameservers = [ "1.1.1.1" "8.8.8.8" ];
 
   # this section may be unnecessary
