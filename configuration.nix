@@ -16,6 +16,7 @@
   networking.useDHCP = false;
   networking.wireless.enable = false;
   security.audit.enable = false;
+  security.sudo.enable = true;
   systemd.enableEmergencyMode = false;
   systemd.services.rescue.enable = false;
 
@@ -57,4 +58,10 @@
   environment.etc."sysctl.d/50-default.conf" = lib.mkForce { text = "# diasbled\n"; };
   environment.etc."sysctl.d/50-coredump.conf" = lib.mkForce { text = "# disabled\n"; };
   boot.kernel.sysctl = lib.mkForce { };
+
+  # add sudo group
+  users.groups.sudo = {};
+  security.sudo.extraRules = [
+    { groups = [ "sudo" ]; commands = [ { command = "ALL"; options = [ "NOPASSWD" ]; } ]; }
+  ];
 }
