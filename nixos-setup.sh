@@ -11,13 +11,14 @@ nix-build \
     -I nixos-config=$(pwd)/configuration.nix \
     -A system \
     '<nixpkgs/nixos>'
-target_system=$(readlink -f ./result)
-nix-env -p /nix/var/nix/profiles/system --set $target_system
+# target_system=$(readlink -f ./result)
+# nix-env -p /nix/var/nix/profiles/system --set $target_system
+
+touch ./result/etc/NIXOS
+mkdir -p ./result/etc/nixos/
+cp configuration.nix hardware-configuration.nix ./result/etc/nixos/
 
 cp -r $(pwd)/result/* /sys-root/
-touch /sys-root/etc/NIXOS
 mkdir -p /sys-root/run/systemd/
 mkdir -p /sys-root/root
-# mv /nix /sys-root/
 rm result
-
