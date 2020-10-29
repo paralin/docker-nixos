@@ -14,8 +14,9 @@
   networking.wireless.enable = false;
   networking.resolvconf.dnsExtensionMechanism = false;
   networking.nameservers = [ "1.1.1.1" "8.8.8.8" ];
+  networking.interfaces.eth0.useDHCP = false;
+  networking.useDHCP = false;
 
-  # this section may be unnecessary
   boot.isContainer = true;
   boot.loader = {
     systemd-boot.enable = false;
