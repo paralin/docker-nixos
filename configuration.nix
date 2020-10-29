@@ -64,4 +64,14 @@
   security.sudo.extraRules = [
     { groups = [ "sudo" ]; commands = [ { command = "ALL"; options = [ "NOPASSWD" ]; } ]; }
   ];
+
+  # add skiff core default user
+  users.extraUsers.core = {
+    isNormalUser = true;
+    home = "/home/core";
+    description = "Skiff Core";
+    extraGroups = ["wheel" "vboxusers" "sudo"];
+    createHome = true;
+    shell = "/run/current-system/sw/bin/bash";
+  };
 }
