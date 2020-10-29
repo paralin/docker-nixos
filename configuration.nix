@@ -8,26 +8,20 @@
   ];
 
   documentation.doc.enable = false;
-  security.audit.enable = false;
   networking.firewall.enable = false;
-  networking.networkmanager.enable = false;
-  networking.wireless.enable = false;
-  networking.resolvconf.dnsExtensionMechanism = false;
-  networking.nameservers = [ "1.1.1.1" "8.8.8.8" ];
   networking.interfaces.eth0.useDHCP = false;
+  networking.nameservers = [ "1.1.1.1" "8.8.8.8" ];
+  networking.networkmanager.enable = false;
+  networking.resolvconf.dnsExtensionMechanism = false;
   networking.useDHCP = false;
+  networking.wireless.enable = false;
+  security.audit.enable = false;
+  systemd.enableEmergencyMode = false;
 
   boot.isContainer = true;
   boot.loader = {
     systemd-boot.enable = false;
     efi.canTouchEfiVariables = false;
-  };
-
-  nixpkgs.config = {
-    allowUnfree = true; # Allow "unfree" packages.
-
-    # firefox.enableAdobeFlash = true;
-    # chromium.enablePepperFlash = true;
   };
 
   # List packages installed in system profile. To search by name, run:
@@ -46,6 +40,13 @@
     unzip
     vim
   ];           
+
+  nixpkgs.config = {
+    allowUnfree = true; # Allow "unfree" packages.
+
+    # firefox.enableAdobeFlash = true;
+    # chromium.enablePepperFlash = true;
+  };
 
   environment.variables = { GOROOT = [ "${pkgs.go.out}/share/go" ]; };
 
