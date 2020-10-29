@@ -3,7 +3,9 @@
 This repository contains a **Dockerfile** of a multi-stage build which produces
 a functional NixOS system as the output image.
 
-It uses alpine as an intermediate build environment, which is available for most architectures.
+It uses Ubuntu as an intermediate build environment, which is available for most
+architectures. There is a variant for Alpine, but it has issues building - RT34
+errors, possibly due to musl.
 
 # Usage
 

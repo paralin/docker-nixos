@@ -26,5 +26,7 @@ cd nix
 bash ./configure --prefix=/usr/local --disable-doc-gen
 make -j4
 sudo make install
+sudo nix-store --realise
 cd ../
 rm -rf ./nix
+
