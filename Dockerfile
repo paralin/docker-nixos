@@ -37,17 +37,17 @@ RUN sudo -u builder bash -c "cd /home/builder && bash ./scripts/nix-setup.sh"
 ADD nixpkgs-setup.sh /home/builder/scripts/
 RUN sudo -u builder bash -c "cd /home/builder && bash ./scripts/nixpkgs-setup.sh"
 
-ADD nixos-setup.sh default.nix configuration.nix /home/builder/sys-config/
+ADD nixos-setup.sh configuration.nix /home/builder/sys-config/
 RUN \
   mkdir -p /sys-root && \
-  sudo -u builder bash -e -c "cd /home/builder/sys-config && bash ./nixos-setup.sh" && \
-  tar -C /sys-root -xf /home/builder/sys-config/result.tar.xz && \
-  rm /home/builder/sys-config/result.tar.xz
+  cd /home/builder/sys-config && bash ./nixos-setup.sh
 
 # create the final Docker image using the output of the build.
 FROM scratch
 
 WORKDIR /
 COPY --from=builder /sys-root/ /
+COPY --from=builder /nix/ /nix/
+COPY ./configuration.nix ./hardware-configuration.nix /etc/nixos/
 
 ENTRYPOINT ["/init"]
