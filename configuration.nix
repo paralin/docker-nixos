@@ -2,10 +2,17 @@
 
 {
   imports = [
-    ./hardware-configuration.nix
     <nixpkgs/nixos/modules/virtualisation/docker-image.nix>
     <nixpkgs/nixos/modules/installer/cd-dvd/channel.nix>
+    (import <mobile-nixos/lib/configuration.nix> { device = "pine64-pinephone"; })
+    # <mobile-nixos/examples/demo/configuration.nix>
+    <mobile-nixos/examples/hello/configuration.nix>
+    ./hardware-configuration.nix
   ];
+
+  mobile.quirks.u-boot.additionalCommands = lib.mkForce "";
+  mobile.boot.stage-1.kernel.package = lib.mkForce {};
+  mobile.quirks.u-boot.package = lib.mkForce {};
 
   documentation.doc.enable = false;
   networking.firewall.enable = false;
@@ -21,6 +28,7 @@
   systemd.services.rescue.enable = false;
 
   boot.isContainer = true;
+  boot.growPartition = false;
   boot.loader = {
     systemd-boot.enable = false;
     efi.canTouchEfiVariables = false;
