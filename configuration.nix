@@ -2,16 +2,15 @@
 
 {
   imports = [
-    ./hardware-configuration.nix
     <nixpkgs/nixos/modules/virtualisation/docker-image.nix>
-    <nixpkgs/nixos/modules/installer/cd-dvd/channel.nix>
+    ./hardware-configuration.nix
   ];
 
   documentation.doc.enable = false;
   networking.firewall.enable = false;
   networking.interfaces.eth0.useDHCP = false;
   networking.nameservers = [ "1.1.1.1" "8.8.8.8" ];
-  networking.networkmanager.enable = false;
+  networking.networkmanager.enable = lib.mkForce false;
   networking.resolvconf.dnsExtensionMechanism = false;
   networking.useDHCP = false;
   networking.wireless.enable = false;
@@ -19,6 +18,7 @@
   security.sudo.enable = true;
   systemd.enableEmergencyMode = false;
   systemd.services.rescue.enable = false;
+  environment.noXlibs = lib.mkForce false;
 
   boot.isContainer = true;
   boot.loader = {
@@ -31,16 +31,17 @@
   environment.systemPackages = with pkgs; [
     bashInteractive
     cacert
-    nix
-    tree
-    wget
-    git
-    gnupg
     curl
-    tmux
+    git
     gnumake
+    gnupg
+    htop
+    nix
+    tmux
+    tree
     unzip
     vim
+    wget
   ];           
 
   nixpkgs.config = {
