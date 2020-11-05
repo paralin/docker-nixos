@@ -7,6 +7,7 @@
   ];
 
   documentation.doc.enable = false;
+  environment.noXlibs = lib.mkForce false;
   networking.firewall.enable = false;
   networking.interfaces.eth0.useDHCP = false;
   networking.nameservers = [ "1.1.1.1" "8.8.8.8" ];
@@ -14,11 +15,12 @@
   networking.resolvconf.dnsExtensionMechanism = false;
   networking.useDHCP = false;
   networking.wireless.enable = false;
+  nix.distributedBuilds = true;
   security.audit.enable = false;
   security.sudo.enable = true;
   systemd.enableEmergencyMode = false;
   systemd.services.rescue.enable = false;
-  environment.noXlibs = lib.mkForce false;
+  systemd.services.systemd-hostnamed.enable = lib.mkForce false;
 
   boot.isContainer = true;
   boot.loader = {
