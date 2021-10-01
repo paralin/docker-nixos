@@ -9,6 +9,7 @@
   documentation.doc.enable = false;
   environment.noXlibs = lib.mkForce false;
   networking.firewall.enable = false;
+  networking.hostName = lib.mkForce "";
   networking.interfaces.eth0.useDHCP = false;
   networking.nameservers = [ "1.1.1.1" "8.8.8.8" ];
   networking.networkmanager.enable = lib.mkForce false;
@@ -19,7 +20,9 @@
   security.audit.enable = false;
   security.sudo.enable = true;
   systemd.enableEmergencyMode = false;
+  systemd.services.console-getty.enable = lib.mkForce false;
   systemd.services.rescue.enable = false;
+  systemd.services.systemd-firstboot.enable = lib.mkForce false;
   systemd.services.systemd-hostnamed.enable = lib.mkForce false;
 
   boot.isContainer = true;
