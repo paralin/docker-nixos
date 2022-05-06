@@ -25,7 +25,7 @@ tar --strip-components=1 -C nix -xf ./nix.tar.gz
 rm nix.tar.gz
 cd nix
 ./bootstrap.sh
-bash ./configure --prefix=/usr/local --disable-doc-gen
+bash ./configure --prefix=/usr/local --disable-doc-gen CFLAGS="-fPIC"
 make -j4
 sudo make install
 sudo nix-store --realise

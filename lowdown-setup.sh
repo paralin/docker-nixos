@@ -22,7 +22,7 @@ tar --strip-components=1 -C lowdown -xf ./lowdown.tar.gz
 rm lowdown.tar.gz
 cd lowdown
 # ./autogen.sh
-./configure PREFIX=/usr/local
+CFLAGS="-fPIC" ./configure PREFIX=/usr/local
 make -j4
 sudo make install
 cd ../
