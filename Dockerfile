@@ -1,5 +1,5 @@
-# FROM ubuntu:focal as builder
-FROM quay.io/skiffos/ubuntu:focal as builder
+# FROM quay.io/skiffos/ubuntu:focal as builder
+FROM debian:bullseye as builder
 
 # Bootstraps a full NixOS container by building Nix and compiling the config.
 # The result is a fully featured NixOS container image.
@@ -13,8 +13,9 @@ RUN \
   build-essential curl bash git autoconf automake libsqlite3-dev bison libtool \
   flex autoconf-archive libboost-all-dev cmake libcppunit-dev ca-certificates \
   libssl-dev libedit-dev libseccomp-dev jq libarchive-dev wget pkg-config \
-  linux-headers-generic docbook-xml docbook-xsl libsodium-dev sudo libbz2-dev \
-  libcurl4-openssl-dev liblzma-dev libbrotli-dev && \
+  linux-headers-$(dpkg --print-architecture) docbook-xml docbook-xsl libsodium-dev \
+  sudo libbz2-dev libcurl4-openssl-dev liblzma-dev libbrotli-dev libgc-dev nlohmann-json3-dev \
+  libgtest-dev googletest && \
   apt-get autoremove -y && \
   rm -rf /var/lib/apt/lists/*
 

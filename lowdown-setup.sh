@@ -1,8 +1,9 @@
 #!/bin/bash
 set -eo pipefail
 
-LOWDOWN_VERSION=0.7.4
-LOWDOWN_HASH=21bb1cad16a71a3b218965ea7109592ef7f22853eb46f0448af99741bf26c052
+LOWDOWN_VERSION=0.9.2
+LOWDOWN_HASH=5c355d1db2071916b1ad6e789208de664be3781bd17dd8b6b09b1707a283a988
+
 LOWDOWN_SOURCE=https://kristaps.bsd.lv/lowdown/snapshots/lowdown-${LOWDOWN_VERSION}.tar.gz
 
 echo "Downloading lowdown version ${LOWDOWN_VERSION}..."
@@ -17,7 +18,7 @@ if [ $DL_SUM != $LOWDOWN_HASH ]; then
 fi
 
 mkdir -p lowdown
-tar --strip-components=2 -C lowdown -xf ./lowdown.tar.gz
+tar --strip-components=1 -C lowdown -xf ./lowdown.tar.gz
 rm lowdown.tar.gz
 cd lowdown
 # ./autogen.sh
