@@ -15,9 +15,12 @@ RUN \
   libssl-dev libedit-dev libseccomp-dev jq libarchive-dev wget pkg-config \
   linux-headers-$(dpkg --print-architecture) docbook-xml docbook-xsl libsodium-dev \
   sudo libbz2-dev libcurl4-openssl-dev liblzma-dev libbrotli-dev libgc-dev nlohmann-json3-dev \
-  libgtest-dev googletest libgmock-dev libcpuid-dev && \
+  libgtest-dev googletest libgmock-dev && \
   apt-get autoremove -y && \
   rm -rf /var/lib/apt/lists/*
+
+# if we are on amd64 install libcpuid-dev
+RUN bash -c '[[ "$(dpkg --print-architecture)" != "amd64"* ]] || apt install -y libcpuid-dev'
 
 # nyx nyx nyx nyx nyx!
 RUN \
