@@ -1,5 +1,5 @@
 # FROM quay.io/skiffos/ubuntu:focal as builder
-FROM debian:bullseye as builder
+FROM debian:sid as builder
 
 # Bootstraps a full NixOS container by building Nix and compiling the config.
 # The result is a fully featured NixOS container image.
