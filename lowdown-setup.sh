@@ -1,10 +1,13 @@
 #!/bin/bash
 set -eo pipefail
 
-LOWDOWN_VERSION=0.9.2
-LOWDOWN_HASH=5c355d1db2071916b1ad6e789208de664be3781bd17dd8b6b09b1707a283a988
+LOWDOWN_VERSION=1200b9f4ceceb5795ccc0a02a2105310f0819222
+LOWDOWN_SOURCE=https://github.com/kristapsdz/lowdown/archive/${LOWDOWN_VERSION}.tar.gz
 
-LOWDOWN_SOURCE=https://kristaps.bsd.lv/lowdown/snapshots/lowdown-${LOWDOWN_VERSION}.tar.gz
+# wget -q -O- https://github.com/kristapsdz/lowdown/archive/${LOWDOWN_VERSION}.tar.gz | \
+#     tee >(sha256sum | cut -d' ' -f1 | \
+#     xargs -I {} sed -i 's/LOWDOWN_HASH=.*/LOWDOWN_HASH={}/' lowdown-setup.sh) >/dev/null
+LOWDOWN_HASH=ace39b836bff0acedae9f0acdcbe33f18322145b2faa22b4d4a74b75b8e69637
 
 echo "Downloading lowdown version ${LOWDOWN_VERSION}..."
 wget -q -O lowdown.tar.gz ${LOWDOWN_SOURCE}
@@ -18,12 +21,11 @@ if [ $DL_SUM != $LOWDOWN_HASH ]; then
 fi
 
 mkdir -p lowdown
-tar --strip-components=1 -C lowdown -xf ./lowdown.tar.gz
+tar -C lowdown -xf ./lowdown.tar.gz --strip-components=1
 rm lowdown.tar.gz
 cd lowdown
-# ./autogen.sh
 CFLAGS="-fPIC" ./configure PREFIX=/usr/local
-make -j4
+make -j$(nproc)
 sudo make install
 cd ../
 rm -rf lowdown
