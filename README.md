@@ -152,7 +152,6 @@ services:
         volumes:
             - type: tmpfs
               target: /run
-            - ./test:/test
             - /sys/fs/cgroup:/sys/fs/cgroup:rw
             # When options.nix is defined it will use the flake described in the file
             - ./options.nix:/options.nix
