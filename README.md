@@ -103,7 +103,7 @@ Special thanks to Christian Stewart (@paralin) who did most of the hard work get
 
 ## Advanced usages
 
-If you want to use a flake you can specify a standard system flake with `nixosConfigurations`. This is controlled by `options.nix` in the root directory:
+If you want to load an arbitrary configuration into the container you can do it via a flake rather than a single `configuration.nix`. To use a flake you can specify a standard system flake with `nixosConfigurations` like you would for your desktop or server. This is controlled by `options.nix` in the root directory:
 
 
 `options.nix`
@@ -142,7 +142,7 @@ If you want to use a flake you can specify a standard system flake with `nixosCo
 
 ```
 
-Then set the `options.nix` on the container:
+Then mount `options.nix` at the root of the container.
 
 
 ```yaml
@@ -161,3 +161,5 @@ services:
             - 80:80
         cgroup: host
 ```
+
+You're now runing the system configuration described in the flake in the container!
