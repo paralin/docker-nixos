@@ -78,7 +78,6 @@ services:
         volumes:
             - type: tmpfs
               target: /run
-            - ./test:/test
             - /sys/fs/cgroup:/sys/fs/cgroup:rw
             # Set the configuration file used by the container
             - ./nginx.nix:/config/configuration.nix

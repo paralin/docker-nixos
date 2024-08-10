@@ -53,4 +53,3 @@ COPY configuration.nix /baseconfig/container.nix
 COPY config /config
 
 ENTRYPOINT ["/init"]
-CMD ["/switch"]
