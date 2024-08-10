@@ -1,31 +1,15 @@
 # FROM quay.io/skiffos/ubuntu:focal as builder
-FROM debian:sid as builder
+FROM archlinux:base-devel as builder
 
-# Bootstraps a full NixOS container by building Nix and compiling the config.
-# The result is a fully featured NixOS container image.
-RUN \
-  export DEBIAN_FRONTEND=noninteractive; \
-  apt-get update; \
-  apt-get install -y \
-  --no-install-recommends \
-  -o "Dpkg::Options::=--force-confdef"  \
-  -o "Dpkg::Options::=--force-confold"  \
-  build-essential curl bash git autoconf automake libsqlite3-dev bison libtool \
-  flex autoconf-archive libboost-all-dev cmake libcppunit-dev ca-certificates \
-  libssl-dev libedit-dev libseccomp-dev jq libarchive-dev wget pkg-config \
-  linux-headers-$(dpkg --print-architecture) docbook-xml docbook-xsl libsodium-dev \
-  sudo libbz2-dev libcurl4-openssl-dev liblzma-dev libbrotli-dev libgc-dev nlohmann-json3-dev \
-  libgtest-dev googletest libgmock-dev && \
-  apt-get autoremove -y && \
-  rm -rf /var/lib/apt/lists/*
-
-# if we are on amd64 install libcpuid-dev
-RUN bash -c '[[ "$(dpkg --print-architecture)" != "amd64"* ]] || apt install -y libcpuid-dev'
+RUN pacman --noconfirm -Syu
+RUN pacman --noconfirm -S shadow wget pkg-config autoconf-archive jq boost boost \
+  editline libsodium libcpuid gtest rapidcheck nlohmann-json libgit2
+RUN pacman --noconfirm -Scc 
 
 # nyx nyx nyx nyx nyx!
 RUN \
-  addgroup nixbld && \
-  adduser --disabled-password --gecos "" --home /home/builder --shell /bin/bash builder && \
+  groupadd nixbld && \
+  useradd --home /home/builder --shell /bin/bash builder && \
   usermod -a -G nixbld builder && \
   echo "builder ALL=(ALL) NOPASSWD: ALL" > /etc/sudoers.d/builder && \
   chmod 600 /etc/sudoers.d/builder && \
@@ -50,15 +34,23 @@ RUN \
   mkdir -m 0755 -p /sys-root/etc/nixos && \
   touch /sys-root/etc/NIXOS && \
   cp /home/builder/sys-config/*.nix \
-     /sys-root/etc/nixos/
+     /sys-root/etc/nixos/ 
+  
 
 # create the final Docker image using the output of the build.
 FROM scratch
 
+STOPSIGNAL SIGRTMIN+3
+
 WORKDIR /
 ENV container docker
 
-COPY --from=builder /nix/ /nix/
+COPY --from=builder /nix /nix
 COPY --from=builder /sys-root/ /
+COPY options.nix /options.nix
+COPY container-base-config-flake.nix /baseconfig/flake.nix
+COPY configuration.nix /baseconfig/container.nix
+COPY config /config
 
 ENTRYPOINT ["/init"]
+CMD ["/switch"]

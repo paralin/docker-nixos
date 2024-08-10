@@ -3,7 +3,6 @@ set -eo pipefail
 
 NIX_VERSION=2.23.1
 NIX_HASH=c7cf1492f642fdfdc3f1ca8ebaad03274282720565b55f5144aba4850a44a3da
-
 NIX_SOURCE=https://github.com/NixOS/nix/archive/${NIX_VERSION}/nix-${NIX_VERSION}.tar.gz
 
 echo "Downloading nix version ${NIX_VERSION}..."
@@ -21,9 +20,9 @@ mkdir -p nix
 tar --strip-components=1 -C nix -xf ./nix.tar.gz
 rm nix.tar.gz
 cd nix
-./bootstrap.sh
+autoreconf -vfi
 bash ./configure --prefix=/usr/local --disable-doc-gen CFLAGS="-fPIC"
-make -j4
+make -j32
 sudo make install
 sudo nix-store --realise
 cd ../

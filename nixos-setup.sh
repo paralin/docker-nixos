@@ -16,7 +16,7 @@ nix-build \
 
 touch ./result/etc/NIXOS
 mkdir -p ./result/etc/nixos/
-cp configuration.nix hardware-configuration.nix ./result/etc/nixos/
+cp configuration.nix ./result/etc/nixos/
 
 cp -r $(pwd)/result/* /sys-root/
 mkdir -p /sys-root/run/systemd/
