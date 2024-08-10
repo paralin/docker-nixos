@@ -99,3 +99,65 @@ services:
 ## Thanks
 
 Special thanks to Christian Stewart (@paralin) who did most of the hard work getting NixOS running in a container in the first place with a clever two stage build process.
+
+
+## Advanced usages
+
+If you want to use a flake you can specify a standard system flake with `nixosConfigurations`. This is controlled by `options.nix` in the root directory:
+
+
+`options.nix`
+
+
+```
+{
+    flakeUrl = "github:MyUser/myflakeflake/main";
+    nixosConfiguration = "myConfigurationName";
+}
+
+```
+
+
+`flake.nix`
+
+
+```nix
+{
+  description = "Flake for a container";
+
+  inputs = {
+    nixpkgs.url = "github:NixOS/nixpkgs/nixos-24.05";
+  };
+
+  outputs = { self, nixpkgs, ... }@inputs: 
+	{
+    nixosConfigurations.myConfigurationName = nixpkgs.lib.nixosSystem {
+      system = "x86_64-linux";
+      modules = [
+        ./module
+      ];
+    };
+  };
+}
+
+```
+
+Then set the `options.nix` on the container:
+
+
+```yaml
+services:
+    nginx:
+        image: trpb/docker-nixos:latest
+        volumes:
+            - type: tmpfs
+              target: /run
+            - ./test:/test
+            - /sys/fs/cgroup:/sys/fs/cgroup:rw
+            # When options.nix is defined it will use the flake described in the file
+            - ./options.nix:/options.nix
+            - ./path/to/web/root:/web
+        ports:
+            - 80:80
+        cgroup: host
+```
