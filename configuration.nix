@@ -42,7 +42,6 @@ in {
   swapDevices = [ ];
   powerManagement.cpuFreqGovernor = lib.mkDefault "ondemand";
 
-  environment.noXlibs = lib.mkForce true;
   nix.settings.sandbox = false;
   networking.firewall.enable = lib.mkDefault false;
   networking.hostName = lib.mkForce "";

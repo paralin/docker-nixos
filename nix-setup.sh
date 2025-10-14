@@ -22,7 +22,7 @@ rm nix.tar.gz
 cd nix
 autoreconf -vfi
 bash ./configure --prefix=/usr/local --disable-doc-gen CFLAGS="-fPIC"
-make -j32
+make -j$(nproc)
 sudo make install
 sudo nix-store --realise
 cd ../

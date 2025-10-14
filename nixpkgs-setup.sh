@@ -1,14 +1,9 @@
 #!/bin/bash
 set -eo pipefail
 
-# previous working version:
-# NIXPKGS_VERSION=v208
-# NIXPKGS_HASH=b49b7aa90e89fe1016036d2f770975f3322b8724401b534b4a356046cba424ee
-
-NIXPKGS_VERSION=24.05
-NIXPKGS_HASH=911314b81780f26fdaf87e17174210bdbd40c86bac1795212f257cdc236a1e78
-
-NIXPKGS_SOURCE=https://github.com/NixOS/nixpkgs/archive/${NIXPKGS_VERSION}/nixos-${NIXPKGS_VERSION}.tar.gz
+NIXPKGS_VERSION=25.05
+NIXPKGS_HASH=130b4257b3d53bfbfea6d61fb76d4751a3989a4a09a28615ff77516a82b3924d
+NIXPKGS_SOURCE=https://github.com/NixOS/nixpkgs/archive/${NIXPKGS_VERSION}.tar.gz
 
 echo "Downloading nixpkgs version ${NIXPKGS_VERSION}..."
 cd ~

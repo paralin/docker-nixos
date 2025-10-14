@@ -23,7 +23,9 @@ rm editline.tar.xz
 cd editline
 # ./autogen.sh
 ./configure --prefix=/usr/local --disable-seccomp-sandboxing --disable-manual
-make -j4
+# Disable building examples to avoid compilation errors
+sed -i 's/SUBDIRS = src include man examples/SUBDIRS = src include man/' Makefile
+make -j$(nproc)
 sudo make install
 cd ..
 rm -rf editline
