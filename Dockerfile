@@ -79,6 +79,10 @@ RUN mkdir -p /sys-root && \
 
 FROM scratch
 
+LABEL org.opencontainers.image.source=https://github.com/skiffos/docker-nixos
+LABEL org.opencontainers.image.description="NixOS container image built from source"
+LABEL org.opencontainers.image.licenses=MIT
+
 STOPSIGNAL SIGRTMIN+3
 WORKDIR /
 ENV container=docker
