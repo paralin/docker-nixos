@@ -1,9 +1,10 @@
 #!/bin/bash
 set -eo pipefail
 
-NIXPKGS_VERSION=25.05
-NIXPKGS_HASH=130b4257b3d53bfbfea6d61fb76d4751a3989a4a09a28615ff77516a82b3924d
-NIXPKGS_SOURCE=https://github.com/NixOS/nixpkgs/archive/${NIXPKGS_VERSION}.tar.gz
+NIXPKGS_VERSION=25.05-20251014
+NIXPKGS_COMMIT=a493e93b4a259cd9fea8073f89a7ed9b1c5a1da2
+NIXPKGS_HASH=2766f53095c62b417dc283fb9f8a0c3447ad3e138f4686426c5fdd0b7e595a0b
+NIXPKGS_SOURCE=https://github.com/NixOS/nixpkgs/archive/${NIXPKGS_COMMIT}/nixpkgs-${NIXPKGS_VERSION}.tar.gz
 
 echo "Downloading nixpkgs version ${NIXPKGS_VERSION}..."
 cd ~
@@ -20,5 +21,4 @@ fi
 mkdir -p nix-path/nixpkgs
 tar --strip-components=1 -C nix-path/nixpkgs -xf ./nixpkgs.tar.gz
 rm nixpkgs.tar.gz
-#cd nix-path/nixpkgs
-#cd ../../
+
