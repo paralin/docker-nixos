@@ -1,14 +1,14 @@
 #!/bin/bash
 set -eo pipefail
 
-EDITLINE_VERSION=1.17.1
-EDITLINE_HASH=df223b3333a545fddbc67b49ded3d242c66fadf7a04beb3ada20957fcd1ffc0e
-# EDITLINE_SOURCE=https://github.com/troglobit/editline/archive/${EDITLINE_VERSION}/editline-${EDITLINE_VERSION}.tar.gz
-EDITLINE_SOURCE=http://gentoo.osuosl.org/distfiles/88/editline-${EDITLINE_VERSION}.tar.xz
+EDITLINE_VERSION=1.17.2-pre-r1
+EDITLINE_COMMIT=f735e4d1d566cac3caa4a5e248179d07f0babefd
+EDITLINE_HASH=e4f6614d132f9a52f862dc5e4b5df0b0ac1d523eb60d21764ed4c295b580ffc7
+EDITLINE_SOURCE=https://github.com/troglobit/editline/archive/${EDITLINE_COMMIT}/editline-${EDITLINE_VERSION}.tar.gz
 
 echo "Downloading editline version ${EDITLINE_VERSION}..."
-wget -O editline.tar.xz ${EDITLINE_SOURCE}
-DL_SUM=$(sha256sum editline.tar.xz | cut -d" " -f1)
+wget -O editline.tar.gz ${EDITLINE_SOURCE}
+DL_SUM=$(sha256sum editline.tar.gz | cut -d" " -f1)
 if [ $DL_SUM != $EDITLINE_HASH ]; then
     echo "Downloaded file hash mismatch!"
     echo "URL: $EDITLINE_SOURCE"
@@ -18,10 +18,10 @@ if [ $DL_SUM != $EDITLINE_HASH ]; then
 fi
 
 mkdir -p editline
-tar --strip-components=1 -C editline -xf ./editline.tar.xz
-rm editline.tar.xz
+tar --strip-components=1 -C editline -xf ./editline.tar.gz
+rm editline.tar.gz
 cd editline
-# ./autogen.sh
+./autogen.sh
 ./configure --prefix=/usr/local --disable-seccomp-sandboxing --disable-manual
 # Disable building examples to avoid compilation errors
 sed -i 's/SUBDIRS = src include man examples/SUBDIRS = src include man/' Makefile

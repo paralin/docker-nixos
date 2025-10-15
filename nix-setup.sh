@@ -1,8 +1,8 @@
 #!/bin/bash
 set -eo pipefail
 
-NIX_VERSION=2.23.1
-NIX_HASH=c7cf1492f642fdfdc3f1ca8ebaad03274282720565b55f5144aba4850a44a3da
+NIX_VERSION=2.32.1
+NIX_HASH=879e05682a35aefe7fc8c570475ce8deb93e0324ac3d6cccadd060de2b481947
 NIX_SOURCE=https://github.com/NixOS/nix/archive/${NIX_VERSION}/nix-${NIX_VERSION}.tar.gz
 
 echo "Downloading nix version ${NIX_VERSION}..."
@@ -20,10 +20,10 @@ mkdir -p nix
 tar --strip-components=1 -C nix -xf ./nix.tar.gz
 rm nix.tar.gz
 cd nix
-autoreconf -vfi
-bash ./configure --prefix=/usr/local --disable-doc-gen --disable-unit-tests CFLAGS="-fPIC"
-make -j$(nproc)
-sudo make install
+meson setup build --prefix=/usr/local -Dunit-tests=false -Ddoc-gen=false
+meson compile -C build -j$(nproc)
+sudo meson install -C build
+sudo ldconfig
 sudo nix-store --realise
 cd ../
 rm -rf ./nix

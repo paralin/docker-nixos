@@ -1,17 +1,23 @@
-# Use Ubuntu Noble (24.04 LTS) instead of Arch Linux to support arm64 builds,
+# Use Ubuntu Rolling instead of Arch Linux to support arm64 builds,
 # as Arch Linux does not provide official arm64 images.
-FROM ubuntu:noble AS builder
+FROM ubuntu:rolling AS builder
+
+ENV DEBIAN_FRONTEND=noninteractive
 
 RUN apt-get update && apt-get upgrade -y && \
-    apt-get install -y \
+    apt-get install -y --no-install-recommends \
       build-essential \
       wget \
+      ca-certificates \
       pkg-config \
       autoconf-archive \
       jq \
       sudo \
       bison \
       flex \
+      ninja-build \
+      bmake \
+      cmake \
       libboost-all-dev \
       libedit-dev \
       libsodium-dev \
@@ -19,13 +25,24 @@ RUN apt-get update && apt-get upgrade -y && \
       libgmock-dev \
       librapidcheck-dev \
       nlohmann-json3-dev \
-      libgit2-dev \
       libarchive-dev \
       libsqlite3-dev \
       libcurl4-openssl-dev \
       libbrotli-dev \
       libseccomp-dev \
-      libgc-dev && \
+      libgc-dev \
+      libssh2-1-dev \
+      libtoml11-dev \
+      libdbi-perl \
+      libdbd-sqlite3-perl \
+      libperl-dev \
+      libgit2-dev \
+      liblowdown-dev \
+      librust-blake3-dev \
+      libtool \
+      python3 \
+      curl \
+      meson && \
     apt-get clean
 
 RUN groupadd nixbld && \
@@ -40,9 +57,9 @@ RUN chmod +x /home/builder/scripts/editline-setup.sh && \
     chown -R builder /home/builder && \
     sudo -u builder bash -c "cd /home/builder && bash ./scripts/editline-setup.sh"
 
-ADD ./lowdown-setup.sh /home/builder/scripts/
-RUN chmod +x /home/builder/scripts/lowdown-setup.sh && \
-    sudo -u builder bash -c "cd /home/builder && bash ./scripts/lowdown-setup.sh"
+ADD ./blake3-setup.sh /home/builder/scripts/
+RUN chmod +x /home/builder/scripts/blake3-setup.sh && \
+    sudo -u builder bash -c "cd /home/builder && bash ./scripts/blake3-setup.sh"
 
 ADD ./nix-setup.sh /home/builder/scripts/
 RUN chmod +x /home/builder/scripts/nix-setup.sh && \
