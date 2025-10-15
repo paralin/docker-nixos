@@ -21,7 +21,7 @@ tar --strip-components=1 -C nix -xf ./nix.tar.gz
 rm nix.tar.gz
 cd nix
 autoreconf -vfi
-bash ./configure --prefix=/usr/local --disable-doc-gen CFLAGS="-fPIC"
+bash ./configure --prefix=/usr/local --disable-doc-gen --disable-unit-tests CFLAGS="-fPIC"
 make -j$(nproc)
 sudo make install
 sudo nix-store --realise

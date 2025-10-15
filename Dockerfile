@@ -1,49 +1,70 @@
-# FROM quay.io/skiffos/ubuntu:focal as builder
-FROM archlinux:base-devel as builder
+# Use Ubuntu Noble (24.04 LTS) instead of Arch Linux to support arm64 builds,
+# as Arch Linux does not provide official arm64 images.
+FROM ubuntu:noble AS builder
 
-RUN pacman --noconfirm -Syu
-RUN pacman --noconfirm -S shadow wget pkg-config autoconf-archive jq boost boost \
-  editline libsodium libcpuid gtest rapidcheck nlohmann-json libgit2
-RUN pacman --noconfirm -Scc 
+RUN apt-get update && apt-get upgrade -y && \
+    apt-get install -y \
+      build-essential \
+      wget \
+      pkg-config \
+      autoconf-archive \
+      jq \
+      sudo \
+      bison \
+      flex \
+      libboost-all-dev \
+      libedit-dev \
+      libsodium-dev \
+      libgtest-dev \
+      libgmock-dev \
+      librapidcheck-dev \
+      nlohmann-json3-dev \
+      libgit2-dev \
+      libarchive-dev \
+      libsqlite3-dev \
+      libcurl4-openssl-dev \
+      libbrotli-dev \
+      libseccomp-dev \
+      libgc-dev && \
+    apt-get clean
 
-# nyx nyx nyx nyx nyx!
-RUN \
-  groupadd nixbld && \
-  useradd --home /home/builder --shell /bin/bash builder && \
-  usermod -a -G nixbld builder && \
-  echo "builder ALL=(ALL) NOPASSWD: ALL" > /etc/sudoers.d/builder && \
-  chmod 600 /etc/sudoers.d/builder && \
-  mkdir -p /home/builder/sys-config /home/builder/scripts
+RUN groupadd nixbld && \
+    useradd --home /home/builder --shell /bin/bash builder && \
+    usermod -a -G nixbld builder && \
+    echo "builder ALL=(ALL) NOPASSWD: ALL" > /etc/sudoers.d/builder && \
+    chmod 600 /etc/sudoers.d/builder && \
+    mkdir -p /home/builder/sys-config /home/builder/scripts
 
-ADD ./nix-setup.sh ./editline-setup.sh ./lowdown-setup.sh /home/builder/scripts/
-RUN \
-  chmod +x /home/builder/scripts/* && \
-  chown -R builder /home/builder && \
-  sudo -u builder bash -c "cd /home/builder && bash ./scripts/editline-setup.sh"
-RUN sudo -u builder bash -c "cd /home/builder && bash ./scripts/lowdown-setup.sh"
-RUN sudo -u builder bash -c "cd /home/builder && bash ./scripts/nix-setup.sh"
+ADD ./editline-setup.sh /home/builder/scripts/
+RUN chmod +x /home/builder/scripts/editline-setup.sh && \
+    chown -R builder /home/builder && \
+    sudo -u builder bash -c "cd /home/builder && bash ./scripts/editline-setup.sh"
 
-ADD nixpkgs-setup.sh /home/builder/scripts/
-RUN sudo -u builder bash -c "cd /home/builder && bash ./scripts/nixpkgs-setup.sh"
+ADD ./lowdown-setup.sh /home/builder/scripts/
+RUN chmod +x /home/builder/scripts/lowdown-setup.sh && \
+    sudo -u builder bash -c "cd /home/builder && bash ./scripts/lowdown-setup.sh"
 
-ADD nixos-setup.sh *.nix /home/builder/sys-config/
-RUN \
-  mkdir -p /sys-root && \
-  cd /home/builder/sys-config && bash ./nixos-setup.sh && \
-  rm /sys-root/etc && \
-  mkdir -m 0755 -p /sys-root/etc/nixos && \
-  touch /sys-root/etc/NIXOS && \
-  cp /home/builder/sys-config/*.nix \
-     /sys-root/etc/nixos/ 
-  
+ADD ./nix-setup.sh /home/builder/scripts/
+RUN chmod +x /home/builder/scripts/nix-setup.sh && \
+    sudo -u builder bash -c "cd /home/builder && bash ./scripts/nix-setup.sh"
 
-# create the final Docker image using the output of the build.
+ADD ./nixpkgs-setup.sh /home/builder/scripts/
+RUN chmod +x /home/builder/scripts/nixpkgs-setup.sh && \
+    sudo -u builder bash -c "cd /home/builder && bash ./scripts/nixpkgs-setup.sh"
+
+ADD ./nixos-setup.sh *.nix /home/builder/sys-config/
+RUN mkdir -p /sys-root && \
+    cd /home/builder/sys-config && bash ./nixos-setup.sh && \
+    rm /sys-root/etc && \
+    mkdir -m 0755 -p /sys-root/etc/nixos && \
+    touch /sys-root/etc/NIXOS && \
+    cp /home/builder/sys-config/*.nix /sys-root/etc/nixos/
+
 FROM scratch
 
 STOPSIGNAL SIGRTMIN+3
-
 WORKDIR /
-ENV container docker
+ENV container=docker
 
 COPY --from=builder /nix /nix
 COPY --from=builder /sys-root/ /
